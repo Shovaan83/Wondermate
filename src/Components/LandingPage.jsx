@@ -36,7 +36,9 @@ const LandingPage = () => {
             alt="image"
           />
           <div className="absolute left-8 top-4 hidden md:block">
+            <a href="/SignUp">
             <h1 className="text-4xl font-bold text-orange-500">Explore.</h1>
+            </a>
           </div>
           <div className="flex-1 flex justify-center items-center gap-4">
             {NavLinks.map((links) => (
