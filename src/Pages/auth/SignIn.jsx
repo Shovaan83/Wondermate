@@ -1,8 +1,8 @@
 import React from 'react'
-import BGImg from "../assets/undraw_signin.svg";
+import BGImg from "../../assets/undraw_signin.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { signInSchema } from '../Validation/formValidation';
+import { signInSchema } from '../../Validation/formValidation';
 
 const SignUp = () => {
 

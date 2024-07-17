@@ -1,19 +1,23 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LandingPage from "./Components/LandingPage.jsx";
-import SignUp from "./Components/SignUp.jsx";
-import SignIn from "./Components/SignIn.jsx";
-import Tours from "./Components/Tours.jsx";
-
+import LandingPage from "./Pages/LandingPage";
+import SignIn from "./Pages/auth/SignIn";
+import SignUp from "./Pages/auth/SignUp";
+import Tours from "./Pages/Tours";
+import UserLayout from "./Layouts/UserLayout";
+import Destination from "./Pages/Destination";
 function App() {
   return (
     <>
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/SignIn" element={<SignIn />} />
-          <Route path="/Tours" element={<Tours />} />
-        </Routes>
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/user" element={<UserLayout />}>
+            <Route path="destination" element={<Destination />} />
+            <Route path="tours" element={<Tours />} />
+          </Route>
+        </Routes> 
       </Router>
     </>
   );

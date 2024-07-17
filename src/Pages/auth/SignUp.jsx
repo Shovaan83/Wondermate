@@ -1,9 +1,9 @@
 import React from 'react'
 import { useState } from 'react';
-import BGImg from "../assets/undraw_signup.svg";
+import BGImg from "../../assets/undraw_signup.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { signUpSchema } from '../Validation/formValidation';
+import { signUpSchema } from '../../Validation/formValidation';
 
 
 const SignUp = () => {

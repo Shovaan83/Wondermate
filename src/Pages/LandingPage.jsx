@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { RxHamburgerMenu } from "react-icons/rx";
 import BGImg from "../assets/bg8.jpg";
 import HeaderImage from "../assets/headerImg5.jpg";
-import { landingFooterLinks, LandingHeaderLinks, NavLinks } from "../helper/Data.js";
+import { landingFooterLinks, landingHeaderLinks, NavLinks } from "../helper/Data.js";
 import { Link } from "react-router-dom";
 
 const LandingPage = () => {
@@ -59,7 +59,7 @@ const LandingPage = () => {
           transition={{ duration: 0.3 }}
           className="h-screen w-[40%] block md:hidden fixed top-0 right-0 bg-zinc-300 z-50 rounded-xl"
         >
-          {LandingHeaderLinks.map((links) => (
+          {landingHeaderLinks.map((links) => (
             <Link
               key={links.id}
               className="flex p-4 font-bold hover:bg-blue-300 cursor-pointer"
