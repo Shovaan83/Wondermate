@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { getHotels, getTravelPackages, getThingsToDos, getTopDestinations } from "../api/index";
 import userImg from "../assets/userProfile.jpg";
 import HeadImg from "../assets/headerImg9.jpg";
 import DestImg from "../assets/bg.jpg"
@@ -10,6 +11,49 @@ import Footer from '../Components/footer';
 
 const Tours = () => {
   const [open, setOpen] = useState(false);
+
+  const hotelUrl = "/user/hotels";
+  const travelPackagesUrl = "/user/travelPackages";
+  const thingsToDoUrl = "/user/thingsToDo";
+  const topDestinationsUrl = "/user/topDestinations";
+  const [hotels, setHotels] = useState([]);
+  const [travelPackages, setTravelPackages] = useState([]);
+  const [thingsToDo, setThingsToDo] = useState([]);
+  const [destinations, setDestinations] = useState([]);
+
+  useEffect(() => {
+    const fetchHotels = async () => {
+      const data = await getHotels();
+      setHotels(data);
+    };
+    fetchHotels();
+
+    const fetchTravelPackages = async () => {
+      const data = await getTravelPackages();
+      setTravelPackages(data);
+    };
+    fetchTravelPackages();
+
+    const fetchThingsToDo = async () => {
+      const data = await getThingsToDos();
+      setThingsToDo(data);
+    };
+    fetchThingsToDo();
+
+    const fetchDestinations = async () => {
+      const data = await getTopDestinations();
+      setDestinations(data);
+    };
+    fetchDestinations();
+  }, []);
+
+  useEffect(() => {
+    console.log("Hotels:", hotels);
+    console.log("Travel Packages:", travelPackages);
+    console.log("Things To Do:", thingsToDo);
+    console.log("Destinations:", destinations);
+  }, [hotels, travelPackages, thingsToDo, destinations]);
+
 
   return (
     <>
@@ -87,7 +131,7 @@ const Tours = () => {
               <h1 className='font-bold text-lg'>Top Destination</h1>
             </div>
 
-            <Cards data={topDestinations} />
+            <Cards data={destinations } url={topDestinationsUrl} />
 
             <div className='flex gap-3 items-center pt-8'>
               <img
@@ -99,7 +143,7 @@ const Tours = () => {
               <h1 className='font-bold text-lg'>Top Hotels</h1>
             </div>
 
-            <Cards data={hotels} />
+            <Cards data={hotels} url={hotelUrl}/>
 
             <div className='flex gap-3 items-center pt-8'>
               <img
@@ -111,7 +155,7 @@ const Tours = () => {
               <h1 className='font-bold text-lg'>Top Travel Packages</h1>
             </div>
 
-            <Cards data={travelPackages} />
+            <Cards data={travelPackages} url={travelPackagesUrl}/>
 
 
           </div>
