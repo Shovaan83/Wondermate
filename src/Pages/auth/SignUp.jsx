@@ -1,13 +1,17 @@
 import React from 'react'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BGImg from "../../assets/undraw_signup.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signUpSchema } from '../../Validation/formValidation';
+import axios from "axios";
 
 
 const SignUp = () => {
 
+  const [role, setRole] = useState("User");
+  const navigate = useNavigate();
   // const [formData, setFormData] = useState({
   //   username: "",
   //   email: "",
@@ -34,9 +38,31 @@ const SignUp = () => {
     )
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
+  const onSubmit = async (data) => {
+
+    data.role = role;
+    try
+    {
+      const response = await axios.post("http://localhost:5102/api/User", data);
+
+      if (response.status === 200) {
+        console.log("User created successfully", response.data);
+        alert("User created successfully");
+        navigate("/signin");
+    }
+  }
+
+  catch (err) {
+    console.log(err);
+    alert(err.response.data);
+  }
+
+}
+
+  // const onSubmit = (data) => {
+  //   console.log(data);
+  // };
+
 
   return (
     <div className='h-screen w-full flex justify-center items-center'>
@@ -101,6 +127,18 @@ const SignUp = () => {
                 {...register("confirmPassword")}
               />
               <p className='text-red-600 text-md font-semibold'>{errors.confirmPassword?.message}</p>
+
+              <div className="relative">
+                <select
+                  className="signup-input"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  <option value="User">User</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
+
               <button className="mt-5 tracking-wide font-semibold bg-blue-700 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-500 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
                 <span className="ml-3">Sign Up</span>
               </button>

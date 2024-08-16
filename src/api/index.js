@@ -1,12 +1,13 @@
 import axios from "axios";
 
-const jsonUrl = "http://localhost:3000";
+const jsonUrl = "http://localhost:5102";
 
 export const getHotels = async () => {
 
     try{
-        const response = await axios.get(`${jsonUrl}/hotels`);
+        const response = await axios.get(`${jsonUrl}/api/Hotel`);
         const data = await response.data;
+        console.log(data);
         return data;
     
     } catch (error) {
@@ -50,7 +51,7 @@ export const getTopDestination = async (id) => {
 
 export const getTravelPackages = async () => {
     try{
-        const response = await axios.get(`${jsonUrl}/travelPackages`);
+        const response = await axios.get(`${jsonUrl}/api/TravelPackages`);
         const data = await response.data;
         return data;
     }

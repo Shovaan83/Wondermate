@@ -2,18 +2,18 @@ import React, { useState, useEffect } from "react";
 import { getHotels } from "../../api";
 import axios from "axios";
 import DeleteModal from "../../Elements/DeleteModal";
+import { typeOf } from "maplibre-gl";
 
 const ManageHotel = () => {
   const [hotels, setHotels] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentHotel, setCurrentHotel] = useState({});
-  const [open, setOpen ] = useState(false);
+  const [open, setOpen] = useState(false);
   const [id, setId] = useState();
 
-
   const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState();
   const [file, setFile] = useState([]);
   const [freeCancellation, setFreeCancellation] = useState(false);
   const [reserveNow, setReserveNow] = useState(false);
@@ -38,17 +38,18 @@ const ManageHotel = () => {
   };
 
   const handleEdit = (hotel) => {
+    setId(hotel.id);
     setIsEditing(true);
-    setCurrentHotel(hotel);
     setName(hotel.name);
     setPrice(hotel.price);
-    setFile(hotel.img);
+    setFile(hotel.imageUrl || []);
     setFreeCancellation(hotel.freeCancellation);
     setReserveNow(hotel.reserveNow);
-    setDescription(hotel.desc);
+    setDescription(hotel.description);
+    cosole.log("Editing Hotel:", hotel);
   };
 
-  const uploadImageToCloudinary = async () => {
+  const uploadImageToCloudinary = async (newImages) => {
     const cloudinaryUrl =
       "https://api.cloudinary.com/v1_1/dtnxy4t7e/image/upload";
     const uploadPreset = "tqrsuipi";
@@ -68,22 +69,27 @@ const ManageHotel = () => {
     //   })
     // )
 
+    try {
+      const imageUrls = await Promise.all(
+        newImages
+          .filter((image) => image instanceof Blob || image instanceof File)
+          .map(async (file) => {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", uploadPreset);
 
+            const response = await axios.post(cloudinaryUrl, formData);
+            console.log("Response from Cloudinary", response.data.url);
+            return response.data.url;
+          })
+      );
+      console.log("Images are uploaded to Cloudinary", imageUrls);
+      return imageUrls;
+    }
+    catch (err) {
+      console.error("Error while uploading images to Cloudinary", err);
 
-    const imageUrls = await Promise.all(
-      file
-        .filter((image) => image instanceof Blob || image instanceof File)
-      .map(async (file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", uploadPreset);
-
-        const response = await axios.post(cloudinaryUrl, formData);
-        return response.data.url;
-      })
-    );
-
-    return imageUrls;
+    }
   };
 
 
@@ -92,40 +98,55 @@ const ManageHotel = () => {
     e.preventDefault();
     setLoading(true);
 
-    const imageUrls = uploadImageToCloudinary();
-    console.log(`This is the imageUrls ${imageUrls}`);
+    const newImages = file.filter(
+      (image) => image instanceof Blob || image instanceof File
+    );
+
+    const existingImageUrl = file.filter((image) => typeof image === "string");
+
+    // const imageUrls = uploadImageToCloudinary();
+    // console.log(`This is the imageUrls ${imageUrls}`);
+
+    const newImageUrls = newImages.length > 0 ? await uploadImageToCloudinary(newImages) : [];
+    console.log(`Uploaded images: ${newImageUrls}`);
+
+    const combinedImageUrls = [...existingImageUrl, ...newImageUrls];
+    console.log(`Combined image URLs: ${combinedImageUrls}`);
+    const ImageUrl = combinedImageUrls.filter(
+      (item) => Object.keys(item).length !== 0
+    );
+
 
     const hotelData = {
-      id: isEditing ? currentHotel.id : String(hotels.length + 1),
-      name: name,
-      price: price,
-      img: isEditing
-        ? [
-          ...file.filter((item) => Object.keys(item).length !== 0),
-          ...imageUrls.filter((item) => Object.keys(item).length !== 0),
-        ]
-        : (await imageUrls).filter((item) => Object.keys(item).length !== 0),
-      freeCancellation: freeCancellation,
-      reserveNow: reserveNow,
-      desc: description,
+      Name: name,
+      Price: price,
+      ImageUrl: ImageUrl,
+      FreeCancellation: freeCancellation,
+      ReserveNow: reserveNow,
+      Description: description,
     };
 
+
+    // Determine whether to add or update hotel data
     const uploadData = async () => {
       try {
-        const response = await axios.post("http://localhost:3000/hotels", hotelData);
+        const response = await axios.post(
+          "http://localhost:5102/api/Hotel",
+          hotelData
+        );
+        console.log("Hotel added:", response);
         setLoading(false);
         fetchHotels();
         resetForm();
-        console.log("This is the response", response);
       } catch (err) {
-        console.log(err);
+        console.error("Error adding hotel:", err);
         setLoading(false);
       }
     };
 
     const editData = async () => {
       try {
-        const response = await axios.put(`http://localhost:3000/hotels/${currentHotel.id}`, hotelData);
+        const response = await axios.put(`http://localhost:5102/api/Hotel/${id}`, hotelData);
         setLoading(false);
         fetchHotels();
         resetForm();
@@ -152,7 +173,7 @@ const ManageHotel = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:3000/hotels/${id}`);
+      const response = await axios.delete(`http://localhost:5102/api/Hotel/${id}`);
       fetchHotels();
       console.log(response);
     } catch (err) {
@@ -191,7 +212,7 @@ const ManageHotel = () => {
               <div className="relative" key={index}>
                 <img
                   className="h-26 w-26 mt-5 object-cover rounded"
-                  src={`${file instanceof Blob || file instanceof File ? URL.createObjectURL(imag) : imag}`}
+                  src={`${imag instanceof Blob || imag instanceof File ? URL.createObjectURL(imag) : imag}`}
                   alt="image"
                 />
                 <button

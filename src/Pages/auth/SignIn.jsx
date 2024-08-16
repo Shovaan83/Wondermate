@@ -3,9 +3,12 @@ import BGImg from "../../assets/undraw_signin.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signInSchema } from '../../Validation/formValidation';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
 
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -16,9 +19,36 @@ const SignUp = () => {
     )
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try
+    {
+      const responseData = await axios.post("http://localhost:5102/api/Auth/SignIn", data);
+      console.log(responseData);
+
+      if(responseData == 200)
+      {
+        const { token, expiresIn, role } = responseData.response; 
+        console.log("Response Data:", responseData.data);
+
+        alert("Sign In Successful");
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("expiresIn", expiresIn);
+        localStorage.setItem('role', role);
+        setUser({ role });
+
+        console.log("Role:", role);
+        console.log("Expires In:", expiresIn);
+        navigate(role === "Admin" ? "/dashboard" : "/user/tours");
+      }
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
   };
+
+
 
   return (
     <div className='h-screen w-full flex justify-center items-center'>
