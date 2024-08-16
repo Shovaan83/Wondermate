@@ -4,7 +4,7 @@ import { getHotels, getTravelPackages, getThingsToDos, getTopDestinations } from
 import userImg from "../assets/userProfile.jpg";
 import HeadImg from "../assets/headerImg9.jpg";
 import DestImg from "../assets/bg.jpg"
-import Cards from "../Components/Card";
+import Card from "../Components/Card";
 import { IoSearch } from "react-icons/io5";
 import { hotels, travelPackages, topDestinations } from "../helper/Data";
 import Footer from '../Components/footer';
@@ -131,7 +131,7 @@ const Tours = () => {
               <h1 className='font-bold text-lg'>Top Destination</h1>
             </div>
 
-            <Cards data={destinations } url={topDestinationsUrl} />
+            <Card data={destinations } url={topDestinationsUrl} />
 
             <div className='flex gap-3 items-center pt-8'>
               <img
@@ -143,7 +143,7 @@ const Tours = () => {
               <h1 className='font-bold text-lg'>Top Hotels</h1>
             </div>
 
-            <Cards data={hotels} url={hotelUrl}/>
+            <Card data={hotels} url={hotelUrl}/>
 
             <div className='flex gap-3 items-center pt-8'>
               <img
@@ -155,7 +155,7 @@ const Tours = () => {
               <h1 className='font-bold text-lg'>Top Travel Packages</h1>
             </div>
 
-            <Cards data={travelPackages} url={travelPackagesUrl}/>
+            <Card data={travelPackages} url={travelPackagesUrl}/>
 
 
           </div>

@@ -10,7 +10,7 @@ const Cards = ({ data, url }) => {
           key={item.id}
           className="h-[30vh] sm:h-[40vh] xl:h-[50vh] w-full flex flex-col justify-between bg-red-200 rounded-lg cursor-pointer drop-shadow-lg hover:-translate-y-3 transition-all ease-in-out duration-300"
           style={{
-            background:  `url(${item.img[0]})`,
+            background:  `url(${item.img})`,
             backgroundSize: "cover",
           }}
         >

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import BGImg from "../../assets/undraw_signin.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const SignUp = () => {
 
   const navigate = useNavigate();
+  const [user,setUser]  = useState("User");
   const {
     register,
     handleSubmit,
@@ -25,10 +26,10 @@ const SignUp = () => {
       const responseData = await axios.post("http://localhost:5102/api/Auth/SignIn", data);
       console.log(responseData);
 
-      if(responseData == 200)
+      if(responseData.status == 200)
       {
-        const { token, expiresIn, role } = responseData.response; 
-        console.log("Response Data:", responseData.data);
+        const { token, expiresIn, role } = responseData.data.response; 
+        // console.log("Response Data:", responseData.data);
 
         alert("Sign In Successful");
 
@@ -64,6 +65,8 @@ const SignUp = () => {
               <input
                 className="w-full px-5 py-3 rounded-md font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-blue-600 focus:bg-blue-100"
                 type="text"
+                name ="username"
+                id="username"
                 placeholder="Username"
                 {...register("username")}
               />
@@ -71,6 +74,8 @@ const SignUp = () => {
               <input
                 className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-blue-600 focus:bg-blue-100"
                 type="password"
+                name="password"
+                id="password"
                 placeholder="Password"
                 {...register("password")}
               />
